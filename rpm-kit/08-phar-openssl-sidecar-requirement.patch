@@ -1,0 +1,28 @@
+--- a/ext/phar/util.c
++++ b/ext/phar/util.c
+@@ -1794,6 +1794,25 @@
+ 	off_t read_len;
+ 	unsigned char buf[1024];
+ 
++	/* A separately installed .pubkey is an OpenSSL trust anchor. Refuse
++	 * hash-only signatures rather than silently downgrading authentication.
++	 * Applies to native, tar and zip archives through this common verifier. */
++	if (sig_type != PHAR_SIG_OPENSSL) {
++		char *pfile;
++		struct stat pubkey_stat;
++		int has_pubkey;
++
++		spprintf(&pfile, 0, "%s.pubkey", fname);
++		has_pubkey = VCWD_STAT(pfile, &pubkey_stat) == 0;
++		efree(pfile);
++		if (has_pubkey) {
++			if (error) {
++				spprintf(error, 0, "phar '%s' requires an OpenSSL signature because a .pubkey exists", fname);
++			}
++			return FAILURE;
++		}
++	}
++
+ 	php_stream_rewind(fp);
+ 
+ 	switch (sig_type) {
