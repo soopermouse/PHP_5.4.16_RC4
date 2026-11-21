@@ -1,0 +1,91 @@
+{
+  "php": "/mnt/data/php54_rc6_fpm_localbuild/sapi/cli/php",
+  "tests": 11,
+  "passed": 9,
+  "skipped": 2,
+  "failed": 0,
+  "cases": [
+    {
+      "category": "soap",
+      "name": "valid",
+      "passed": true,
+      "returncode": 0,
+      "response": ">return</rpc:result><return enc:itemType=\"xsd:string\" enc:arraySize=\"2\" xsi:type=\"ns2:ArrayOfstring\"><item xsi:type=\"xsd:string\">hello</item><item xsi:type=\"xsd:string\">world</item></return></ns1:echoStringArrayResponse></env:Body></env:Envelope>\nok\n"
+    },
+    {
+      "category": "soap",
+      "name": "empty",
+      "passed": true,
+      "returncode": 0,
+      "response": ">return</rpc:result><return enc:itemType=\"xsd:string\" enc:arraySize=\"2\" xsi:type=\"ns2:ArrayOfstring\"><item xsi:type=\"xsd:string\">hello</item><item xsi:type=\"xsd:string\">world</item></return></ns1:echoStringArrayResponse></env:Body></env:Envelope>\nok\n"
+    },
+    {
+      "category": "soap",
+      "name": "spaces",
+      "passed": true,
+      "returncode": 0,
+      "response": ">return</rpc:result><return enc:itemType=\"xsd:string\" enc:arraySize=\"2\" xsi:type=\"ns2:ArrayOfstring\"><item xsi:type=\"xsd:string\">hello</item><item xsi:type=\"xsd:string\">world</item></return></ns1:echoStringArrayResponse></env:Body></env:Envelope>\nok\n"
+    },
+    {
+      "category": "soap",
+      "name": "invalid",
+      "passed": true,
+      "returncode": 0,
+      "response": ">return</rpc:result><return enc:itemType=\"xsd:string\" enc:arraySize=\"2\" xsi:type=\"ns2:ArrayOfstring\"><item xsi:type=\"xsd:string\">hello</item><item xsi:type=\"xsd:string\">world</item></return></ns1:echoStringArrayResponse></env:Body></env:Envelope>\nok\n"
+    },
+    {
+      "category": "soap",
+      "name": "zero",
+      "passed": true,
+      "returncode": 0,
+      "response": ">return</rpc:result><return enc:itemType=\"xsd:string\" enc:arraySize=\"2\" xsi:type=\"ns2:ArrayOfstring\"><item xsi:type=\"xsd:string\">hello</item><item xsi:type=\"xsd:string\">world</item></return></ns1:echoStringArrayResponse></env:Body></env:Envelope>\nok\n"
+    },
+    {
+      "category": "soap",
+      "name": "star",
+      "passed": true,
+      "returncode": 0,
+      "response": ">return</rpc:result><return enc:itemType=\"xsd:string\" enc:arraySize=\"2\" xsi:type=\"ns2:ArrayOfstring\"><item xsi:type=\"xsd:string\">hello</item><item xsi:type=\"xsd:string\">world</item></return></ns1:echoStringArrayResponse></env:Body></env:Envelope>\nok\n"
+    },
+    {
+      "category": "soap",
+      "name": "dtd_internal",
+      "passed": true,
+      "returncode": 0,
+      "response": "velope xmlns:env=\"http://www.w3.org/2003/05/soap-envelope\"><env:Body><env:Fault><env:Code><env:Value>env:Receiver</env:Value></env:Code><env:Reason><env:Text>DTD are not supported by SOAP</env:Text></env:Reason></env:Fault></env:Body></env:Envelope>\n"
+    },
+    {
+      "category": "soap",
+      "name": "dtd_external",
+      "passed": true,
+      "returncode": 0,
+      "response": "velope xmlns:env=\"http://www.w3.org/2003/05/soap-envelope\"><env:Body><env:Fault><env:Code><env:Value>env:Receiver</env:Value></env:Code><env:Reason><env:Text>DTD are not supported by SOAP</env:Text></env:Reason></env:Fault></env:Body></env:Envelope>\n"
+    },
+    {
+      "category": "ftp",
+      "name": "ftps",
+      "passed": null,
+      "status": "SKIP",
+      "reason": "ftps wrapper absent (OpenSSL extension not compiled); not a behavior pass"
+    },
+    {
+      "category": "ftp",
+      "name": "FTPS",
+      "passed": null,
+      "status": "SKIP",
+      "reason": "ftps wrapper absent (OpenSSL extension not compiled); not a behavior pass"
+    },
+    {
+      "category": "ftp",
+      "name": "ftp",
+      "passed": true,
+      "commands": [
+        "USER rc4-user",
+        "PASS rc4-password"
+      ],
+      "returncode": 0,
+      "output": "CLOSED",
+      "errors": []
+    }
+  ]
+}

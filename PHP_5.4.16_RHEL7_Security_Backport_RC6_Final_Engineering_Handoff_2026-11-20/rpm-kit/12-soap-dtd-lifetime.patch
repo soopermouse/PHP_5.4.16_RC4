@@ -1,0 +1,14 @@
+--- a/ext/soap/php_xml.c
++++ b/ext/soap/php_xml.c
+@@ -55,6 +55,11 @@
+ 			if (is_blank(trav->content)) {
+ 				del = trav;
+ 			}
++		} else if (trav->type == XML_DTD_NODE) {
++			/* Keep the DTD attached to its owning document: libxml attributes
++			 * may refer to DTD-owned entity content. The SOAP server checks
++			 * xmlGetIntSubset() and rejects DTD-bearing requests.
++			 * CVE-2026-129506. */
+ 		} else if ((trav->type != XML_ELEMENT_NODE) &&
+ 		           (trav->type != XML_CDATA_SECTION_NODE)) {
+ 			del = trav;

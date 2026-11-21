@@ -1,0 +1,26 @@
+PHP 5.4.16 RHEL7 RC6 tooling-fix validation — 2026-11-20
+Environment: local Debian container; not RHEL7 / mod_php RC6 / Python 3.6
+Python 3.13.5
+Linux 6.18.57 x86_64
+\n== Python logic/compatibility test ==
+PASS: 4 reported release-script defects have local logic/compatibility checks
+PASS: Python 3.6 syntax grammar and subprocess API compatibility scan
+PASS: php.ini progress 0/1/On/Off variants accepted; invalid values rejected
+NOTE: actual Python 3.6, RHEL7 RPM and Apache mod_php must run on target host
+\n== FPM C source unit ==
+PASS: JSON/UTF-8 escape unit cases (9), text (1), HTML/XML API/flag mocks (2)
+PASS: output fields and buffer frees in patched source
+NOTE: HTML/XML output requires actual php-fpm integration validation; the test mocks their encoder API
+\n== shell syntax ==
+PASS bash -n 4 release/build scripts
+\n== Python 3.6 grammar for all target test source files ==
+PASS 5 target/test scripts with 3.6 grammar
+\n== patch integrity ==
+15-cgi-path-info-underflow.patch: OK
+16-fpm-status-output-escaping.patch: OK
+SPEC_INTEGRATION.diff: OK
+STATUS.md: OK
+build-rc.sh: OK
+php.spec: OK
+\n== source tar integrity ==
+PASS source archive readable

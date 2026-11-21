@@ -1,0 +1,61 @@
+--- vendor/php.spec
++++ rc6/php.spec
+@@ -69,7 +69,7 @@
+ Summary: PHP scripting language for creating dynamic web sites
+ Name: php
+ Version: 5.4.16
+-Release: 48%{?dist}
++Release: 48%{?dist}.securityrc6
+ # All files licensed under PHP version 3.01, except
+ # Zend is licensed under Zend
+ # TSRM is licensed under BSD
+@@ -219,6 +219,24 @@
+ Patch166: php-5.4.16-CVE-2018-10547.patch
+ Patch167: php-5.4.16-CVE-2019-11043.patch
+ 
++# Experimental 2026 security backport candidate, not vendor-certified
++Patch200: 01-oom-state-PARTIAL.patch
++Patch201: 02-allocator-llist-FIXED.patch
++Patch202: 03-multipart-body-parts.patch
++Patch203: 04-executor-only.patch
++Patch204: 05-sapi-content-type-only.patch
++Patch205: 06-rhel48-multipart-headers.patch
++Patch206: 07-session-file-truncate-before-write.patch
++Patch207: 08-phar-openssl-sidecar-requirement.patch
++Patch208: 09-url-mixed-case-tls.patch
++Patch209: 10-early-error-log-utc.patch
++Patch210: 11-soap-malformed-array-dimension.patch
++Patch211: 12-soap-dtd-lifetime.patch
++Patch212: 13-ftps-require-tls.patch
++Patch213: 14-early-error-lifecycle.patch
++Patch214: 15-cgi-path-info-underflow.patch
++Patch215: 16-fpm-status-output-escaping.patch
++
+ 
+ BuildRequires: bzip2-devel, curl-devel >= 7.9, gmp-devel
+ BuildRequires: httpd-devel >= 2.0.46-1, pam-devel
+@@ -807,6 +825,24 @@
+ %patch166 -p1 -b .cve10547
+ %patch167 -p1 -b .cve11043
+ 
++# Candidate CVE-2026-109618 / CVE-2026-109619 backport
++%patch200 -p1
++%patch201 -p1
++%patch202 -p1
++%patch203 -p1
++%patch204 -p1
++%patch205 -p1
++%patch206 -p1
++%patch207 -p1
++%patch208 -p1
++%patch209 -p1
++%patch210 -p1
++%patch211 -p1
++%patch212 -p1
++%patch213 -p1
++%patch214 -p1
++%patch215 -p1
++
+ 
+ # Prevent %%doc confusion over LICENSE files
+ cp Zend/LICENSE Zend/ZEND_LICENSE

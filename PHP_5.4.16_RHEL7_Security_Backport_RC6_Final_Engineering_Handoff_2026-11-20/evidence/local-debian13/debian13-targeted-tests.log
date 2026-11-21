@@ -1,0 +1,21 @@
+==== FPM status 10 requests ====
+PASS: 10 real FastCGI requests, including HTML/XML/JSON parsability and markup injection checks
+==== FPM app+all fields ====
+PASS full FPM status json with method, URI, query, user and script escaping
+PASS full FPM status xml with method, URI, query, user and script escaping
+PASS full FPM status html with method, URI, query, user and script escaping
+PASS: 23 FPM application, field-escaping, and status checks
+==== CGI path_info ====
+PASS valid
+PASS short
+PASS empty
+==== source markers ====
+PASS sapi/cgi/cgi_main.c (2 markers)
+PASS ext/soap/php_encoding.c (1 markers)
+PASS sapi/fpm/fpm/fpm_status.c (8 markers)
+PASS ext/session/session.c (1 markers)
+PASS: source assertions; runtime and RHEL7 evidence still required
+==== FPM source ====
+PASS: JSON/UTF-8 escape unit cases (9), text (1), HTML/XML API/flag mocks (2)
+PASS: output fields and buffer frees in patched source
+NOTE: HTML/XML output requires actual php-fpm integration validation; the test mocks their encoder API

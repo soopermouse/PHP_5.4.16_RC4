@@ -1,0 +1,38 @@
+{
+  "test": "source-extracted bounded differential; not full PHP memory-safety proof",
+  "compiler": "cc (Debian 14.2.0-19) 14.2.0",
+  "cases": {
+    "array/baseline": {
+      "exit": 0,
+      "stdout": "0\n0\n0\n1\n2\n1",
+      "stderr": ""
+    },
+    "dtd/baseline": {
+      "exit": 12,
+      "stdout": "",
+      "stderr": ""
+    },
+    "cgi/baseline": {
+      "exit": 0,
+      "stdout": "-2\n0\n2",
+      "stderr": ""
+    },
+    "array/patched": {
+      "exit": 0,
+      "stdout": "1\n1\n1\n1\n2\n1",
+      "stderr": ""
+    },
+    "dtd/patched": {
+      "exit": 0,
+      "stdout": "DTD attached until document cleanup",
+      "stderr": ""
+    },
+    "cgi/patched": {
+      "exit": 0,
+      "stdout": "null\nnull\n2",
+      "stderr": ""
+    }
+  },
+  "source_code_changed": false,
+  "status": "PASS: extracted-code before/after structural demonstrations"
+}

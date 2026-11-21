@@ -1,0 +1,119 @@
+RHEL7 runner exact first source-check step: PASS
+DELETE_FROM_RC5.txt: OK
+GATE_FIX_V2_CHANGELOG.md: OK
+README.md: OK
+RELEASE_STATUS.md: OK
+TEST_RESULTS_RC6.md: OK
+TOOLING_FIX_MANIFEST.md: OK
+VERIFICATION_UPDATE_MANIFEST.md: OK
+docs/CVE-2026-129291_PHP54_APPLICABILITY.md: OK
+docs/EVIDENCE_AND_RELEASE_DECISIONS.md: OK
+evidence/RC5_BASELINE_TEST_RESULTS.md: OK
+evidence/RC6_DEBIAN_FPM_FIELDS_APPLICATION_TEST.txt: OK
+evidence/local-debian13/apache-authz-host-syntax-2026-11-20.txt: OK
+evidence/local-debian13/debian13-apache-fpm-http.log: OK
+evidence/local-debian13/debian13-soap-ftps-probes.json: OK
+evidence/local-debian13/debian13-targeted-tests.log: OK
+evidence/local-debian13/debian13-toolchain-and-linked-libraries.txt: OK
+evidence/local-debian13/retest-2026-11-19.log: OK
+evidence/local-debian13/tooling-validation-2026-11-20.log: OK
+local-integration/rebuild-on-debian13.sh: OK
+local-integration/test-apache-fpm-integration.py: OK
+patched-source-files/Zend/zend_alloc.c: OK
+patched-source-files/Zend/zend_alloc.h: OK
+patched-source-files/Zend/zend_execute_API.c: OK
+patched-source-files/Zend/zend_llist.c: OK
+patched-source-files/Zend/zend_strtod.c: OK
+patched-source-files/ext/phar/util.c: OK
+patched-source-files/ext/session/mod_files.c: OK
+patched-source-files/ext/session/session.c: OK
+patched-source-files/ext/soap/php_encoding.c: OK
+patched-source-files/ext/soap/php_xml.c: OK
+patched-source-files/ext/standard/ftp_fopen_wrapper.c: OK
+patched-source-files/ext/standard/http_fopen_wrapper.c: OK
+patched-source-files/main/SAPI.c: OK
+patched-source-files/main/main.c: OK
+patched-source-files/main/rfc1867.c: OK
+patched-source-files/sapi/cgi/cgi_main.c: OK
+patched-source-files/sapi/fpm/fpm/fpm_status.c: OK
+php-5.4.16-48.el7-securityrc6-fully-patched-source.tar.gz: OK
+php-5.4.16-48.el7.src.rpm: OK
+release-gate/README_APACHE_STAGING.md: OK
+release-gate/RELEASE_GATE_RC6.md: OK
+release-gate/check-november-source.py: OK
+release-gate/modphp-runtime-probe.php: OK
+release-gate/staging-checks.sh: OK
+release-gate/verify-build.sh: OK
+release-gate/verify-source-rc6.py: OK
+rpm-kit/01-oom-state-PARTIAL.patch: OK
+rpm-kit/02-allocator-llist-FIXED.patch: OK
+rpm-kit/03-multipart-body-parts.patch: OK
+rpm-kit/04-executor-only.patch: OK
+rpm-kit/05-sapi-content-type-only.patch: OK
+rpm-kit/06-rhel48-multipart-headers.patch: OK
+rpm-kit/07-session-file-truncate-before-write.patch: OK
+rpm-kit/08-phar-openssl-sidecar-requirement.patch: OK
+rpm-kit/09-url-mixed-case-tls.patch: OK
+rpm-kit/10-early-error-log-utc.patch: OK
+rpm-kit/11-soap-malformed-array-dimension.patch: OK
+rpm-kit/12-soap-dtd-lifetime.patch: OK
+rpm-kit/13-ftps-require-tls.patch: OK
+rpm-kit/14-early-error-lifecycle.patch: OK
+rpm-kit/15-cgi-path-info-underflow.patch: OK
+rpm-kit/16-fpm-status-output-escaping.patch: OK
+rpm-kit/SHA256SUMS: OK
+rpm-kit/SPEC_INTEGRATION.diff: OK
+rpm-kit/STATUS.md: OK
+rpm-kit/build-rc.sh: OK
+rpm-kit/php.spec: OK
+target-host-tests/README.md: OK
+target-host-tests/run-rhel7-release-gates.sh: OK
+target-host-tests/test-modphp-isolated.py: OK
+tests/cgi-path-info-smoke.sh: OK
+tests/cgi-path-info-underflow-php54.phpt: OK
+tests/test-fpm-rc6-runtime.py: OK
+tests/test-fpm-rc6-source.py: OK
+tests/test-fpm-status-fields.py: OK
+tests/test-release-tooling.py: OK
+01-oom-state-PARTIAL.patch: OK
+02-allocator-llist-FIXED.patch: OK
+03-multipart-body-parts.patch: OK
+04-executor-only.patch: OK
+05-sapi-content-type-only.patch: OK
+06-rhel48-multipart-headers.patch: OK
+07-session-file-truncate-before-write.patch: OK
+08-phar-openssl-sidecar-requirement.patch: OK
+09-url-mixed-case-tls.patch: OK
+10-early-error-log-utc.patch: OK
+11-soap-malformed-array-dimension.patch: OK
+12-soap-dtd-lifetime.patch: OK
+13-ftps-require-tls.patch: OK
+14-early-error-lifecycle.patch: OK
+15-cgi-path-info-underflow.patch: OK
+16-fpm-status-output-escaping.patch: OK
+SPEC_INTEGRATION.diff: OK
+STATUS.md: OK
+build-rc.sh: OK
+php.spec: OK
+
+Bash syntax: PASS
+
+
+FPM escape source test: PASS
+PASS: JSON/UTF-8 escape unit cases (9), text (1), HTML/XML API/flag mocks (2)
+PASS: output fields and buffer frees in patched source
+NOTE: HTML/XML output requires actual php-fpm integration validation; the test mocks their encoder API
+
+Complete release tooling: PASS
+PASS: checksum gate includes both SHA256SUMS files, both verified
+PASS: empty Off value accepted, absent directive rejected
+PASS: four reported release-script defects have local logic/compatibility checks
+PASS: Python 3.6 syntax grammar and subprocess API compatibility scan
+PASS: php.ini progress empty/0/1/On/Off variants accepted; invalid values rejected
+NOTE: external Python 3.6.8 tested on Ubuntu 24.04; native RHEL7 RPM/Apache remains open
+
+Checksum fail-closed: PASS (intact=pass, tampered=fail, missing manifest=fail)
+
+Source integrity: PASS (16 patches, full tree, 17 modified reference files, spec, build script and SRPM byte-for-byte unchanged)
+
+Environment: Debian container. Native RHEL7 / Apache mod_php and RPM not executed.

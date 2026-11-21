@@ -1,0 +1,16 @@
+PASS Apache configuration syntax:  Syntax OK
+PASS Apache -> FastCGI -> PHP 5.4.16 app HTTP 200
+PASS Apache POST form submission to PHP app
+PASS Apache query-string PHP request
+PASS Missing PHP script denied/not served
+PASS 4 HTTP integration cases; this is Apache+FPM, not mod_php, and Debian not RHEL7
+LOG apache_error.log: [Thu Nov 19 21:27:14.864890 2026] [mpm_event:notice] [pid 95526:tid 95526] AH00489: Apache/2.4.68 (Debian) configured -- resuming normal operations
+[Thu Nov 19 21:27:14.865026 2026] [core:notice] [pid 95526:tid 95526] AH00094: Command line: '/usr/sbin/apache2 -f /tmp/php54_http_integration_h07y1i_m/apache.conf -D FOREGROUND'
+[Thu Nov 19 21:27:14.879062 2026] [proxy_fcgi:error] [pid 95527:tid 95548] [client 127.0.0.1:49886] AH01071: Got error 'Primary script unknown\n'
+[Thu Nov 19 21:27:14.896268 2026] [mpm_event:notice] [pid 95526:tid 95526] AH00491: caught SIGTERM, shutting down
+
+LOG fpm.log: [19-Nov-2026 21:27:14] NOTICE: fpm is running, pid 95523
+[19-Nov-2026 21:27:14] NOTICE: ready to handle connections
+[19-Nov-2026 21:27:14] NOTICE: Terminating ...
+[19-Nov-2026 21:27:14] NOTICE: exiting, bye-bye!
+

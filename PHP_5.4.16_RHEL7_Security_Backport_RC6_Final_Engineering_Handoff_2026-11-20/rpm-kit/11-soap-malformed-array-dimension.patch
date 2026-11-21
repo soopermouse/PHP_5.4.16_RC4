@@ -1,0 +1,13 @@
+--- a/ext/soap/php_encoding.c
++++ b/ext/soap/php_encoding.c
+@@ -2135,7 +2135,9 @@
+ 		}
+ 		str++;
+ 	}
+-	return i;
++	/* A malformed arraySize can contain no dimensions. Never read dims[0]
++	 * from a zero-length allocation (CVE-2026-15353). */
++	return i > 0 ? i : 1;
+ }
+ 
+ static int* get_position_12(int dimension, const char* str)

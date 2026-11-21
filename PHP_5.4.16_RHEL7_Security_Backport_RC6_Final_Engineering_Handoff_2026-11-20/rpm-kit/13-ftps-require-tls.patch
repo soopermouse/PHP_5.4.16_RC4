@@ -1,0 +1,15 @@
+--- a/ext/standard/ftp_fopen_wrapper.c
++++ b/ext/standard/ftp_fopen_wrapper.c
+@@ -187,7 +187,11 @@
+ 			/* get the response */
+ 			result = GET_FTP_RESULT(stream);
+ 			if (result != 334) {
+-				use_ssl = 0;
++				/* Never send USER/PASS or file data in cleartext for an ftps://
++				 * URL, even when both AUTH variants are refused. */
++				php_stream_wrapper_log_error(wrapper, options TSRMLS_CC,
++					"FTPS server refused TLS authentication; refusing plaintext fallback");
++				goto connect_errexit;
+ 			} else {
+ 				/* we must reuse the old SSL session id */
+ 				/* if we talk to an old ftpd-ssl */

@@ -1,0 +1,19 @@
+--- a/main/main.c
++++ b/main/main.c
+@@ -632,11 +632,11 @@
+ 			/* Before a request is fully initialized, timezone globals may refer
+ 			 * to startup allocations that have already been freed. Use UTC
+ 			 * instead of the request-local date cache at those points. */
+-			if (php_during_module_startup() || !module_initialized || PG(during_request_startup)) {
+-				error_time_str = php_format_date("d-M-Y H:i:s e", 13, error_time, 0 TSRMLS_CC);
+-			} else {
+-				error_time_str = php_format_date("d-M-Y H:i:s e", 13, error_time, 1 TSRMLS_CC);
+-			}
++			/* Request-local timezone data is safe only during a fully
++			 * initialized, active request. Use UTC in every other lifecycle
++			 * phase (including shutdown); CVE-2026-129496. */
++			error_time_str = php_format_date("d-M-Y H:i:s e", 13, error_time,
++				PG(modules_activated) && EG(active) TSRMLS_CC);
+ 			len = spprintf(&tmp, 0, "[%s] %s%s", error_time_str, log_message, PHP_EOL);
+ #ifdef PHP_WIN32
+ 			php_flock(fd, 2);

@@ -1,0 +1,28 @@
+BASELINE: PHP_5.4.16_RHEL7_Security_Backport_RC6_Full_Suite_Evidence_Update_2026-11-20.zip
+CHANGED:
+REPLACE README.md
+REPLACE RELEASE_STATUS.md
+REPLACE SHA256SUMS
+REPLACE TEST_RESULTS_RC6.md
+REPLACE release-gate/RELEASE_GATE_RC6.md
+REPLACE target-host-tests/README.md
+REPLACE target-host-tests/run-rhel7-release-gates.sh
+REPLACE tests/test-release-tooling.py
+ADDED:
+ADD CLAUDE_VALIDATION_INSTRUCTIONS.md
+ADD FILE_CHANGES_RC6.md
+ADD FINAL_ENGINEERING_HANDOFF.md
+ADD evidence/source-differential-local-2026-11-20/array_baseline.c
+ADD evidence/source-differential-local-2026-11-20/array_patched.c
+ADD evidence/source-differential-local-2026-11-20/cgi_baseline.c
+ADD evidence/source-differential-local-2026-11-20/cgi_patched.c
+ADD evidence/source-differential-local-2026-11-20/differential-results.json
+ADD evidence/source-differential-local-2026-11-20/dtd_baseline.c
+ADD evidence/source-differential-local-2026-11-20/dtd_patched.c
+ADD release-gate/compatibility-assessment.template.json
+ADD release-gate/verify-compatibility-assessment.py
+ADD tests/run-local-qualification.sh
+ADD tests/test-compatibility-gate.py
+ADD tests/test-soap-cgi-source-differentials.py
+DELETED:
+

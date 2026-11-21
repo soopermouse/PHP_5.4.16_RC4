@@ -1,0 +1,38 @@
+{
+  "release": "PHP 5.4.16 for RHEL 7 Security Backport RC6",
+  "rpm_kit_sha256s_manifest_digest": "376b18e15bf0c745b988ec8bac44f1dd7f52f601b809db4f31057e23eac126b5",
+  "test_population": 12315,
+  "observed_patch_only_differences": 13,
+  "evidence_origin": "Externally reported Ubuntu-based test, source logs not included in this release",
+  "change_ticket": "",
+  "risk_owner": "",
+  "independent_approver": "",
+  "review_date_utc": "",
+  "decision": "pending",
+  "application_inventory_reference": "",
+  "production_rollout_plan_reference": "",
+  "rollback_plan_reference": "",
+  "categories": [
+    {
+      "id": "allocator-memory-limit",
+      "observed_tests": 5,
+      "patch": "Patch200",
+      "risk": "On an allocator limit breach PHP terminates its worker immediately; userland shutdown/error handlers and normal cleanup may not run",
+      "mitigation": "Scope affected apps and alert on worker termination; enforce request limits and reserve capacity; provide restart/rollback procedures",
+      "impacted_integrations": [],
+      "reviewed_test_ids": [],
+      "decision": "pending"
+    },
+    {
+      "id": "session-upload-progress",
+      "observed_tests": 8,
+      "patch": "Patch200",
+      "risk": "RFC1867 session.upload_progress callback is deliberately disabled even if php.ini reports On; dependent upload progress UI or state will not work",
+      "mitigation": "Inventory application upload-progress consumers, use application-supported alternative, verify multipart uploads separately",
+      "impacted_integrations": [],
+      "reviewed_test_ids": [],
+      "decision": "pending"
+    }
+  ],
+  "approver_comment": ""
+}

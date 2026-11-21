@@ -1,0 +1,8 @@
+Debian Apache syntax-only analogue (NOT PHP 5.4/RHEL7 runtime proof)
+Uses Debian Apache2, mod_authz_host and PHP 8.4 module for parsing only
+Command: /usr/sbin/apache2 -f <temporary-isolated-config> -t
+Tests: LoadModule authz_host, Require local, php_admin_value max_multipart_body_parts 2
+Exit: 0
+stdout: 
+stderr: Syntax OK
+Candidate PHP 5.4 libphp5.so was NOT loaded or run; Apache RHEL7 test still required.

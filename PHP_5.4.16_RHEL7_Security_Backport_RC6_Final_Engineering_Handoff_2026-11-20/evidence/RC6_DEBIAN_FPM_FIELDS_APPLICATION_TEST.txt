@@ -1,0 +1,9 @@
+Host: Debian 13 (NOT RHEL7), PHP 5.4.16 patched RC6 FPM (local compiled binary)
+Command: python3 tests/test-fpm-status-fields.py /path/to/patched/php-fpm
+
+PASS full FPM status json with method, URI, query, user and script escaping
+PASS full FPM status xml with method, URI, query, user and script escaping
+PASS full FPM status html with method, URI, query, user and script escaping
+PASS: 23 FPM application, field-escaping, and status checks
+
+Stderr:

@@ -1,0 +1,11 @@
+RC6 overlays do NOT delete files already in your repository. After copying RC6 into an old RC5 repo, manually remove these obsolete RC5 paths if they exist:
+
+release-gate/verify-source-rc5.py
+release-gate/RELEASE_GATE_RC5.md
+release-gate/PHP54_RHEL48_RC1_Release_Gate_v2.zip
+TEST_RESULTS_RC5.md (historical copy now evidence/RC5_BASELINE_TEST_RESULTS.md)
+PACKAGE_SHA256SUMS
+archive-rc3/
+archive-rc4/
+
+Do NOT delete the original SRPM, RPM spec, or earlier 15 candidate patches. Do not copy old RC4 combined patch on top of individual RPM candidate patches.

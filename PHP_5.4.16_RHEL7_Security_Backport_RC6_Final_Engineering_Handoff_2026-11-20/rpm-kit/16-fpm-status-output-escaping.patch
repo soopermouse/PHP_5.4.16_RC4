@@ -1,0 +1,221 @@
+--- a/sapi/fpm/fpm/fpm_status.c
++++ b/sapi/fpm/fpm/fpm_status.c
+@@ -21,6 +21,85 @@
+ static char *fpm_status_ping_uri = NULL;
+ static char *fpm_status_ping_response = NULL;
+ 
++/* Status values include untrusted FastCGI request metadata. Escape every dynamic
++ * value for its output format, not only the query string. PHP 5.4 interface. */
++#define FPM_RC6_TEXT 0
++#define FPM_RC6_HTML 1
++#define FPM_RC6_XML  2
++#define FPM_RC6_JSON 3
++
++static char *fpm_rc6_status_escape(const char *value, int fmt TSRMLS_DC)
++{
++    size_t len, out_len, i, o;
++    char *out;
++    const unsigned char *src;
++
++    if (!value) {
++        value = "";
++    }
++    len = strlen(value);
++    if (fmt == FPM_RC6_HTML || fmt == FPM_RC6_XML) {
++        int flags = ENT_QUOTES | ENT_SUBSTITUTE | ENT_DISALLOWED;
++        flags |= (fmt == FPM_RC6_XML ? ENT_XML1 : ENT_HTML401);
++        return php_escape_html_entities_ex((unsigned char *)value, len,
++            &out_len, 0, flags, "UTF-8", 1 TSRMLS_CC);
++    }
++    if (fmt != FPM_RC6_JSON) {
++        return estrdup(value);
++    }
++    /* Six bytes per input byte covers \\u00xx escapes and U+FFFD replacement.
++     * Valid UTF-8 is kept as-is; invalid sequences are replaced with U+FFFD,
++     * preventing invalid JSON output or injection via malformed bytes. */
++    out = (char *)safe_emalloc(len, 6, 1);
++    src = (const unsigned char *)value;
++    o = 0;
++    for (i = 0; i < len;) {
++        unsigned char c = src[i];
++        size_t n = 0, j;
++        int valid = 1;
++        if (c == '"' || c == '\\') {
++            out[o++] = '\\';
++            out[o++] = (char)c;
++            i++;
++        } else if (c <= 0x1f) {
++            static const char hex[] = "0123456789abcdef";
++            out[o++] = '\\'; out[o++] = 'u'; out[o++] = '0'; out[o++] = '0';
++            out[o++] = hex[c >> 4]; out[o++] = hex[c & 15];
++            i++;
++        } else if (c < 0x80) {
++            out[o++] = (char)c;
++            i++;
++        } else {
++            if (c >= 0xc2 && c <= 0xdf) n = 2;
++            else if (c >= 0xe0 && c <= 0xef) n = 3;
++            else if (c >= 0xf0 && c <= 0xf4) n = 4;
++            if (!n || i + n > len) valid = 0;
++            if (valid) {
++                for (j = 1; j < n; j++) {
++                    if (src[i + j] < 0x80 || src[i + j] > 0xbf) {
++                        valid = 0; break;
++                    }
++                }
++                if (n == 3 && ((c == 0xe0 && src[i+1] < 0xa0) ||
++                               (c == 0xed && src[i+1] >= 0xa0))) valid = 0;
++                if (n == 4 && ((c == 0xf0 && src[i+1] < 0x90) ||
++                               (c == 0xf4 && src[i+1] > 0x8f))) valid = 0;
++            }
++            if (valid) {
++                memcpy(out + o, src + i, n);
++                o += n;
++                i += n;
++            } else {
++                memcpy(out + o, "\\uFFFD", 6);
++                o += 6;
++                i++;
++            }
++        }
++    }
++    out[o] = '\0';
++    return out;
++}
++
+ 
+ int fpm_status_init_child(struct fpm_worker_pool_s *wp) /* {{{ */
+ {
+@@ -52,7 +131,7 @@
+ 	struct fpm_scoreboard_proc_s proc;
+ 	char *buffer, *time_format, time_buffer[64];
+ 	time_t now_epoch;
+-	int full, encode;
++	int full, format;
+ 	char *short_syntax, *short_post;
+ 	char *full_pre, *full_syntax, *full_post, *full_separator;
+ 
+@@ -129,13 +208,13 @@
+ 		full = (fpm_php_get_string_from_table("_GET", "full" TSRMLS_CC) != NULL);
+ 		short_syntax = short_post = NULL;
+ 		full_separator = full_pre = full_syntax = full_post = NULL;
+-		encode = 0;
++		format = FPM_RC6_TEXT;
+ 
+ 		/* HTML */
+ 		if (fpm_php_get_string_from_table("_GET", "html" TSRMLS_CC)) {
+ 			sapi_add_header_ex(ZEND_STRL("Content-Type: text/html"), 1, 1 TSRMLS_CC);
+ 			time_format = "%d/%b/%Y:%H:%M:%S %z";
+-			encode = 1;
++			format = FPM_RC6_HTML;
+ 
+ 			short_syntax =
+ 				"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+@@ -210,7 +289,7 @@
+ 		} else if (fpm_php_get_string_from_table("_GET", "xml" TSRMLS_CC)) {
+ 			sapi_add_header_ex(ZEND_STRL("Content-Type: text/xml"), 1, 1 TSRMLS_CC);
+ 			time_format = "%s";
+-			encode = 1;
++			format = FPM_RC6_XML;
+ 
+ 			short_syntax =
+ 				"<?xml version=\"1.0\" ?>\n"
+@@ -261,6 +340,7 @@
+ 			/* JSON */
+ 		} else if (fpm_php_get_string_from_table("_GET", "json" TSRMLS_CC)) {
+ 			sapi_add_header_ex(ZEND_STRL("Content-Type: application/json"), 1, 1 TSRMLS_CC);
++            format = FPM_RC6_JSON;
+ 			time_format = "%s";
+ 
+ 			short_syntax =
+@@ -356,8 +436,10 @@
+ 
+ 		strftime(time_buffer, sizeof(time_buffer) - 1, time_format, localtime(&scoreboard.start_epoch));
+ 		now_epoch = time(NULL);
++        {
++            char *pool_field = fpm_rc6_status_escape(scoreboard.pool, format TSRMLS_CC);
+ 		spprintf(&buffer, 0, short_syntax,
+-				scoreboard.pool,
++				pool_field,
+ 				PM2STR(scoreboard.pm),
+ 				time_buffer,
+ 				now_epoch - scoreboard.start_epoch,
+@@ -376,6 +458,8 @@
+ 
+ 		PUTS(buffer);
+ 		efree(buffer);
++            efree(pool_field);
++        }
+ 
+ 		if (short_post) {
+ 			PUTS(short_post);
+@@ -384,8 +468,8 @@
+ 		/* no need to test the var 'full' */
+ 		if (full_syntax) {
+ 			int i, first;
+-			size_t len;
+-			char *query_string;
++            char *query_string;
++            char *request_method, *request_uri, *auth_user, *script_filename;
+ 			struct timeval duration, now;
+ #ifdef HAVE_FPM_LQ
+ 			float cpu;
+@@ -412,15 +496,16 @@
+ 					}
+ 				}
+ 
+-				query_string = NULL;
+-				len = 0;
+-				if (proc.query_string[0] != '\0') {
+-					if (!encode) {
+-						query_string = proc.query_string;
+-					} else {
+-						query_string = php_escape_html_entities_ex((unsigned char *)proc.query_string, strlen(proc.query_string), &len, 1, ENT_HTML_IGNORE_ERRORS & ENT_COMPAT, NULL, 1 TSRMLS_CC);
+-					}
+-				}
++                request_method = fpm_rc6_status_escape(
++                    proc.request_method[0] != '\0' ? proc.request_method : "-", format TSRMLS_CC);
++                request_uri = fpm_rc6_status_escape(
++                    proc.request_uri[0] != '\0' ? proc.request_uri : "-", format TSRMLS_CC);
++                query_string = proc.query_string[0] != '\0' ?
++                    fpm_rc6_status_escape(proc.query_string, format TSRMLS_CC) : NULL;
++                auth_user = fpm_rc6_status_escape(
++                    proc.auth_user[0] != '\0' ? proc.auth_user : "-", format TSRMLS_CC);
++                script_filename = fpm_rc6_status_escape(
++                    proc.script_filename[0] != '\0' ? proc.script_filename : "-", format TSRMLS_CC);
+ 
+ #ifdef HAVE_FPM_LQ
+ 				/* prevent NaN */
+@@ -444,13 +529,13 @@
+ 					now_epoch - proc.start_epoch,
+ 					proc.requests,
+ 					duration.tv_sec * 1000000UL + duration.tv_usec,
+-					proc.request_method[0] != '\0' ? proc.request_method : "-",
+-					proc.request_uri[0] != '\0' ? proc.request_uri : "-",
++                    request_method,
++                    request_uri,
+ 					query_string ? "?" : "",
+ 					query_string ? query_string : "",
+ 					proc.content_length,
+-					proc.auth_user[0] != '\0' ? proc.auth_user : "-",
+-					proc.script_filename[0] != '\0' ? proc.script_filename : "-",
++                    auth_user,
++                    script_filename,
+ #ifdef HAVE_FPM_LQ
+ 					proc.request_stage == FPM_REQUEST_ACCEPTING ? cpu : 0.,
+ #endif
+@@ -458,9 +543,11 @@
+ 				PUTS(buffer);
+ 				efree(buffer);
+ 
+-				if (len > 0 && query_string) {
+-					efree(query_string);
+-				}
++                efree(request_method);
++                efree(request_uri);
++                if (query_string) efree(query_string);
++                efree(auth_user);
++                efree(script_filename);
+ 			}
+ 
+ 			if (full_post) {

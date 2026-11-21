@@ -1,0 +1,27 @@
+PASS: JSON/UTF-8 escape unit cases (9), text (1), HTML/XML API/flag mocks (2)
+PASS: output fields and buffer frees in patched source
+NOTE: HTML/XML output requires actual php-fpm integration validation; the test mocks their encoder API
+PASS: 10 real FastCGI requests, including HTML/XML/JSON parsability and markup injection checks
+PASS full FPM status json with method, URI, query, user and script escaping
+PASS full FPM status xml with method, URI, query, user and script escaping
+PASS full FPM status html with method, URI, query, user and script escaping
+PASS: 23 FPM application, field-escaping, and status checks
+PASS valid
+PASS short
+PASS empty
+PASS Apache configuration syntax:  Syntax OK
+PASS Apache -> FastCGI -> PHP 5.4.16 app HTTP 200
+PASS Apache POST form submission to PHP app
+PASS Apache query-string PHP request
+PASS Missing PHP script denied/not served
+PASS 4 HTTP integration cases; this is Apache+FPM, not mod_php, and Debian not RHEL7
+LOG apache_error.log: [Thu Nov 19 21:43:49.628916 2026] [mpm_event:notice] [pid 143993:tid 143993] AH00489: Apache/2.4.68 (Debian) configured -- resuming normal operations
+[Thu Nov 19 21:43:49.629104 2026] [core:notice] [pid 143993:tid 143993] AH00094: Command line: '/usr/sbin/apache2 -f /tmp/php54_http_integration_lju0_j9h/apache.conf -D FOREGROUND'
+[Thu Nov 19 21:43:49.664900 2026] [proxy_fcgi:error] [pid 143997:tid 144036] [client 127.0.0.1:55636] AH01071: Got error 'Primary script unknown\n'
+[Thu Nov 19 21:43:49.682336 2026] [mpm_event:notice] [pid 143993:tid 143993] AH00491: caught SIGTERM, shutting down
+
+LOG fpm.log: [19-Nov-2026 21:43:49] NOTICE: fpm is running, pid 143990
+[19-Nov-2026 21:43:49] NOTICE: ready to handle connections
+[19-Nov-2026 21:43:49] NOTICE: Terminating ...
+[19-Nov-2026 21:43:49] NOTICE: exiting, bye-bye!
+
