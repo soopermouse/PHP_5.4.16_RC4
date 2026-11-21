@@ -69,7 +69,7 @@
 Summary: PHP scripting language for creating dynamic web sites
 Name: php
 Version: 5.4.16
-Release: 48%{?dist}.securityrc4
+Release: 48%{?dist}.securityrc6
 # All files licensed under PHP version 3.01, except
 # Zend is licensed under Zend
 # TSRM is licensed under BSD
@@ -234,6 +234,8 @@ Patch210: 11-soap-malformed-array-dimension.patch
 Patch211: 12-soap-dtd-lifetime.patch
 Patch212: 13-ftps-require-tls.patch
 Patch213: 14-early-error-lifecycle.patch
+Patch214: 15-cgi-path-info-underflow.patch
+Patch215: 16-fpm-status-output-escaping.patch
 
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, gmp-devel
@@ -838,6 +840,8 @@ support for using the enchant library to PHP.
 %patch211 -p1
 %patch212 -p1
 %patch213 -p1
+%patch214 -p1
+%patch215 -p1
 
 
 # Prevent %%doc confusion over LICENSE files
